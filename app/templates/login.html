@@ -1,0 +1,21 @@
+{% extends "base-login.html" %}
+
+{% block content %}
+<div class="login">
+  <h4 class="">Login</h4>
+  <div class="linha">
+    <hr>
+  </div>
+  <form class="form" method="POST" action="{{url_for('autenticar')}}">
+    <input type="hidden" name="proxima" value="{{proxima}}">
+    <p><label class="label">Nome de usuário:</label> <input class="form-control" type="text" name="usuario" autofocus required>
+    </p>
+    <p><label class="label">Senha:</label> <input class="form-control" type="password" name="senha" required></p>
+
+    <a href="{{url_for('alteracao')}}" class="esqueci-senha">Esqueci minha senha</a>
+    <div class="ctn-btn d-flex justify-content-end align-items-center">
+      <button class="btn btn-primary entrar" type="submit">Entrar</button>
+    </div>
+  </form>
+
+  {% endblock %}

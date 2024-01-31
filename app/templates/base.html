@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="{{url_for('static', filename='img/lapis2.png')}}" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="../static/css/base.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+  {% block head %}{% endblock %}
+  <title>{{title}}</title>
+</head>
+
+<body>
+
+  <!--------------------------- Barra ------------------------------->
+  <nav class="navbar navbar-dark bg-dark fixed-top d-flex" id="menu-logo">
+    <div class="container-fluid d-flex justify-content-between align-items-center flex-nowrap">
+
+      <button class="navbar-toggler btn-nav" type="button" data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar">
+        <span class="btn-nav"><i class="fa-solid fa-bars"></i></span>
+      </button>
+
+      <div class="logo">
+        <a href="{{url_for('index')}}"><img src="../static/img/nome_easynotes1.png" width="180px"></a>
+      </div>
+
+      <div class="btn-group dropstart" id="logoff">
+        <div class="dropdown">
+          <button class="btn-letra dropdown-toggle d-flex justify-content-center align-items-center" type="button"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            <p class="letra">{{session['inicial']}}</p>
+
+          </button>
+          <ul class="dropdown-menu">
+            <li id="perfil">Olá, {{session['usuario_logado'].title()}}!</li>
+            <li id="perfil">Perfil: {{session['credencial'].title()}}</li>
+            <hr class="dropdown-divider">
+            <li><a class="dropdown-item sair" href="{{url_for('logoff')}}" id="perfil"
+                style="font-weight: 600;">Sair</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!--------------------------- Menu principal ------------------------------->
+      <div class="offcanvas offcanvas-start text-bg-dark menu" tabindex="-1" id="offcanvasDarkNavbar"
+        aria-labelledby="offcanvasDarkNavbarLabel">
+        <div class="offcanvas-header" id="menu-logo">
+          <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Menu</h5>
+          <button type="button" class="btn-close menu-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body" id="menu-principal">
+          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link active menu-links home" href="{{url_for('index')}}">Home</a>
+            </li>
+
+            {% if session['credencial'] == 'ti' %}
+            <li class="nav-item">
+              <a class="nav-link active menu-links" href="" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">Gerencia de Usuário</a>
+            </li>
+            {% endif %}
+
+          </ul>
+          </form>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  {% with messages = get_flashed_messages(with_categories=True) %}
+  {% if messages %}
+  {% for category, message in messages %}
+  <div class="alert alert-{{category}}">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+
+  <!-- Modal NOVO CHAMADO-->
+  <div class="modal fade" id="Novo-Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" id="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: red;">Nova anotação</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <fieldset class="modal-field">
+            <form action="{{url_for('novo')}}" method="post">
+              <div class="ctn-titulo-cor">
+                <div class="form-filtro align-items-center gap-3 pb-3">
+                  <label class="label-filtro label" for="nome">Título da anotação:</label>
+                  <input type="text" id="nome" name="nome" pattern="^[^\/]+$" class="form-control label-control"
+                    style="width: 350px;outline: none !important;" maxlength="50" required>
+                </div>
+
+                <div class="form-filtro align-items-center gap-3 pb-3 w-25">
+                  <label class="label-filtro label" for="cor">Escolha uma cor para a sua anotação:</label>
+                  <input type="color" id="cor" name="cor" value="#ffffff" list="cores" pattern="^[^\/]+$"
+                    class="form-control label-control cor" required>
+                  <datalist id="cores">
+                    <option>#ffffff</option>
+                    <option>#fff4e6</option>
+                    <option>#ffffba</option>
+                    <option>#ffe9a3</option>
+                    <option>#ffb3ba</option>
+                    <option>#baffc9</option>
+                    <option>#a8e6cf</option>
+                    <option>#bae1ff</option>
+                    <option>#ccd0d7</option>
+                    <option>#ccb4a0</option>
+                  </datalist>
+                </div>
+              </div>
+
+              <div class="form form-group campo">
+                <textarea style="display: none" class="form-control" name="texto" id="texto" maxlength="3000" cols="80"
+                  rows="25" required></textarea>
+              </div>
+
+              <div class="ctn-editor-botao d-flex flex-column gap-5">
+                <div class="ctn-editor-base">
+                  <div name="texto" id="editor" required></div>
+                </div>
+
+                <div class="ctn-botao mt-3">
+                  <button type="submit" class="btn btn-primary">Criar anotação</button>
+                </div>
+              </div>
+            </form>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-------------------------------------------------FIM---------------------------------------------------------->
+
+  <!-------------------------------------------MODAL-CRIAÇÃO-DE-USUÁRIO---------------------------------------------------------->
+
+  <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" id="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="staticBackdropLabel">Gerenciador de Usuários</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modal-gerenciausuario">
+
+          <form action="{{url_for('gerenciausuario')}}" method="post" id="form">
+
+            <fieldset class="d-flex flex-column gap-2">
+              <div class="ctn-check-gerencia">
+                <label class="label" for="form-check">Criar ou resetar senha do operador?</label>
+                <div class="form-check">
+                  <input class="form-check-input circulo" type="radio" value="adicionar" name="verificar"
+                    id="verificar1" checked>
+                  <label class="form-check-label" for="verificar1">Criar usuário</label>
+                </div>
+
+                <div class="form-check nao">
+                  <input class="form-check-input circulo" type="radio" value="resetar" name="verificar" id="verificar2">
+                  <label class="form-check-label" for="verificar2">Resetar senha</label>
+                </div>
+
+                <div class="form-check nao">
+                  <input class="form-check-input circulo" type="radio" value="excluir" name="verificar" id="verificar2">
+                  <label class="form-check-label" for="verificar2">Excluir usuário</label>
+                </div>
+              </div>
+
+              <div class="form form-group" id="ctn-operador" style="display: none">
+                <label for="operador" class="label">Selecione o usuário:</label>
+                <select class="form form-select" name="nome1" id="operador">
+                  {% for usuario in usuarios %}
+                  <option>
+                    {{ usuario[0] if usuario[0] else ""}}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form form-group">
+                <label class="label" for="login">Login:</label>
+                <input type="text" id="login" name="login" maxlength="30" class="form-control">
+              </div>
+
+              <div class="form form-group">
+                <label class="label" for="nome2">Nome:</label>
+                <input type="text" id="nome2" name="nome2" maxlength="80" class="form-control">
+              </div>
+
+              <div class="form form-group">
+                <label class="check-titulo label" for="credencial">Credencial:</label>
+
+                <div class="check">
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" value="ti" name="tratamento" id="tratamento">
+                    <label class="form-check-label" for="tratamento">TI</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" value="supervisor" name="tratamento" id="tratamento1">
+                    <label class="form-check-label" for="tratamento1">Supervisor</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" value="gestão" name="tratamento" id="tratamento2">
+                    <label class="form-check-label" for="tratamento2">Gestão</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" value="atendente" name="tratamento" id="tratamento3"
+                      checked>
+                    <label class="form-check-label" for="tratamento3">Atendente</label>
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div class="ctn-botoes">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+              </div>
+            </fieldset>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-------------------------------------------------FIM---------------------------------------------------------->
+
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+  <script>
+    var Block = Quill.import('blots/block');
+    Block.tagName = 'DIV';
+    Quill.register(Block, true);
+
+    var quill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline'],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'size': ['small', false, 'large', 'huge'] }],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'align': [] }],
+        ]
+      },
+      placeholder: 'Escreva aqui sua anotação...',
+      // Configuração do idioma para português
+      formats: ['bold', 'italic', 'underline', 'strike', 'link', 'image', 'video', 'blockquote', 'code-block', 'header', 'list', 'script', 'indent', 'direction', 'size', 'color', 'background', 'font', 'align'],
+      language: 'pt'
+    });
+
+    // Sincronize o conteúdo do Quill com a textarea
+    quill.on('text-change', function () {
+      document.getElementById('texto').value = quill.root.innerHTML;
+    });
+  </script>
+
+  <script>
+    let cor = document.getElementById('cor');
+    let editor = document.getElementById('editor');
+
+    cor.addEventListener('change', () => {
+      editor.style.background = cor.value;
+    })
+  </script>
+
+  <script>
+    setTimeout(() => {
+      $(".alert-success").fadeOut();
+    }, 3000)
+  </script>
+
+  <script>
+    setTimeout(() => {
+      $("#alert2").fadeOut();
+    }, 3000)
+  </script>
+
+  <script>
+    document.getElementById("form").addEventListener("submit", function (event) {
+      var inputs = document.getElementsByClassName("required-input");
+      for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].value === '') {
+          event.preventDefault();
+          return;
+        }
+      }
+    });
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var radios = document.querySelectorAll('input[name="verificar"]');
+      var nome = document.getElementById('nome2');
+      var login = document.getElementById('login');
+      var labelNome = document.querySelector('label[for="nome2"]');
+      var labelLogin = document.querySelector('label[for="login"]');
+      var labelCredencial = document.querySelector('label[for="credencial"]');
+      var labelTratamento = document.querySelector('label[for="tratamento"]');
+      var labelTratamento1 = document.querySelector('label[for="tratamento1"]');
+      var labelTratamento2 = document.querySelector('label[for="tratamento2"]');
+      var labelTratamento3 = document.querySelector('label[for="tratamento3"]');
+      var tratamento = document.getElementById('tratamento');
+      var tratamento1 = document.getElementById('tratamento1');
+      var tratamento2 = document.getElementById('tratamento2');
+      var tratamento3 = document.getElementById('tratamento3');
+      var ctnOperador = document.getElementById('ctn-operador');
+
+      for (var i = 0; i < radios.length; i++) {
+        radios[i].addEventListener('change', function (e) {
+          if (this.value === 'resetar') {
+            login.removeAttribute('required');
+            nome.removeAttribute('required');
+            nome.style.display = 'none'; // aqui está
+            labelNome.style.display = 'none'; // aqui está
+            login.style.display = 'none';
+            labelLogin.style.display = 'none';
+            labelCredencial.style.display = 'none';
+            tratamento.style.display = 'none';
+            tratamento1.style.display = 'none';
+            tratamento2.style.display = 'none';
+            tratamento3.style.display = 'none';
+            labelTratamento.style.display = 'none';
+            labelTratamento1.style.display = 'none';
+            labelTratamento2.style.display = 'none';
+            labelTratamento3.style.display = 'none';
+            ctnOperador.style.display = 'block';
+          } else if (this.value === 'excluir') {
+            login.removeAttribute('required');
+            nome.removeAttribute('required');
+            nome.style.display = 'none'; // aqui está
+            labelNome.style.display = 'none'; // aqui está
+            login.style.display = 'none';
+            labelLogin.style.display = 'none';
+            labelCredencial.style.display = 'none';
+            tratamento.style.display = 'none';
+            tratamento1.style.display = 'none';
+            tratamento2.style.display = 'none';
+            tratamento3.style.display = 'none';
+            labelTratamento.style.display = 'none';
+            labelTratamento1.style.display = 'none';
+            labelTratamento2.style.display = 'none';
+            labelTratamento3.style.display = 'none';
+            ctnOperador.style.display = 'block';
+          } else {
+            login.setAttribute('required', 'required');
+            nome.setAttribute('required', 'required');
+            nome.style.display = 'block'; // aqui está
+            labelNome.style.display = 'block'; // aqui está
+            login.style.display = 'block';
+            labelLogin.style.display = 'block';
+            labelCredencial.style.display = 'block';
+            tratamento.style.display = 'block';
+            tratamento1.style.display = 'block';
+            tratamento2.style.display = 'block';
+            tratamento3.style.display = 'block';
+            labelTratamento.style.display = 'block';
+            labelTratamento1.style.display = 'block';
+            labelTratamento2.style.display = 'block';
+            labelTratamento3.style.display = 'block';
+            ctnOperador.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+
+</html>

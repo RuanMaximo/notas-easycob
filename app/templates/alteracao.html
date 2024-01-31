@@ -1,0 +1,26 @@
+{% extends "base-login.html" %}
+
+{% block content %}
+
+<div class="login">
+  <h4 class="">Esqueci minha senha</h4>
+  <div class="linha">
+    <hr>
+  </div>
+
+  <form class="form" method="POST" action="{{url_for('confirmausuario')}}">
+
+    <input type="hidden" name="proxima" value="{{proxima}}">
+    <p><label class="label">Informe seu nome completo:</label> <input class="form-control" type="text" name="nome"
+        required></p>
+    <p><label class="label">Informe seu CPF:</label> <input pattern="\d+" title="Digite apenas números"
+        class="form-control" type="text" name="cpf" required></p>
+
+    <div class="ctn-btn d-flex justify-content-end align-items-center gap-1">
+      <a href="{{url_for('login')}}" class="btn btn-secondary voltar" type="button">Voltar</a>
+      <button class="btn btn-success confirmar" type="submit">Confirmar</button>
+    </div>
+
+  </form>
+
+  {% endblock %}

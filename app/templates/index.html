@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="../static/css/index.css">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="novo-bloco">
+  <button class="novo" data-bs-toggle="modal" data-bs-target="#Novo-Modal" title="Nova anotação">
+    <p>+</p>
+  </button>
+</div>
+
+<div class="ctn-index">
+
+  {% for caminho,conteudo in arquivos %}
+
+  <a class="ctn-card card" style="text-decoration: none;background-color: {{caminho.split('&')[1].split('*')[0]}};"
+    href="{{url_for('bloco',caminho=caminho.split('/')[-1])}}">
+    <p style="font-weight: 600 !important; font-size: 16px;">{{caminho.split('&')[0].split('/')[-1]}} </p>
+    <div class="card-conteudo text-start">
+      <p id="conteudo">{{ conteudo | safe }}</p>
+    </div>
+  </a>
+  {% endfor %}
+
+</div>
+
+<script>
+  // Função para limitar o número de caracteres
+  function limitarCaracteres(element, limite) {
+    var originalContent = element.innerHTML;
+    var limitedContent = originalContent.slice(0, limite) + (originalContent.length > limite ? '...' : '');
+    element.innerHTML = limitedContent;
+  }
+
+  // Limite de caracteres desejado
+  var limiteCaracteres = 900; // Ajuste conforme necessário
+
+  // Obtém todos os elementos com a classe 'conteudo' e limita o texto em cada um
+  var conteudoElements = document.getElementsByClassName('card-conteudo');
+
+  for (var i = 0; i < conteudoElements.length; i++) {
+    var conteudoElement = conteudoElements[i];
+    limitarCaracteres(conteudoElement, limiteCaracteres);
+  }
+</script>
+
+{% endblock %}

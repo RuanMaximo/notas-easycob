@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block head %}
+<link rel="stylesheet" href="../static/css/bloco.css">
+{% endblock %}
+
+
+{% block content %}
+<div class="ctn-editor">
+
+    <div class="d-flex justify-content-end align-items-center">
+        <button class="btn btn-secondary voltar mb-3 d-flex" id="voltar"
+            onclick="window.location.href = '{{ url_for('index') }}';">Voltar
+        </button>
+    </div>
+
+    <div style="background-color:{{titulo.split('&')[1].split('*')[0]}};" id="editor" name="editor" class="w-100">
+        {{conteudo | safe }}
+    </div>
+
+
+    <div class="botoes pt-3">
+        <form action="{{url_for('salvar')}}" method="post">
+            <input type="hidden" id="titulo" name="titulo" value="{{titulo}}">
+            <input type="hidden" id="cor_antiga" name="cor_antiga" value="{{titulo.split('&')[1].split('*')[0]}}">
+            <textarea style="display: none" class="form-control" name="texto" id="texto" maxlength="3000" cols="80"
+                rows="25"></textarea>
+
+            <div class="ctn-titulo-cor d-flex align-items-center">
+                <input style="outline: none;border:none;font-weight: 600;font-size: 20px;" class="titulo"
+                    name="titulo_novo" type="text" value="{{titulo.split('&')[0]}}" pattern="^[^\/]+$">
+                <div class="form-color d-flex gap-2 align-items-center">
+                    <label class="label-filtro label" for="cor">Escolha uma cor para a sua anotação:</label>
+                    <input type="color" id="cor" name="cor" value="{{titulo.split('&')[1].split('*')[0]}}" list="cores"
+                        pattern="^[^\/]+$" class="form-control label-control cor">
+                    <datalist id="cores">
+                        <option>#ffffff</option>
+                        <option>#fff4e6</option>
+                        <option>#ffffba</option>
+                        <option>#ffe9a3</option>
+                        <option>#ffb3ba</option>
+                        <option>#baffc9</option>
+                        <option>#a8e6cf</option>
+                        <option>#bae1ff</option>
+                        <option>#ccd0d7</option>
+                        <option>#ccb4a0</option>
+                    </datalist>
+                </div>
+            </div>
+
+            <div class="teste d-flex gap-2 pb-4 align-items-center">
+                <div class="d-flex gap-2 botoes-editor">
+                    <button type="submit" class="btn btn-primary" id="salvar">Salvar</button>
+                    <button type="submit" class="btn btn-success" id="salvar-sair" name="save_and_exit">Salvar e
+                        sair</button>
+        </form>
+
+                    <form action="{{url_for('exclui')}}" method="post"
+                        onsubmit="return confirm('Tem certeza que deseja excluir essa anotação?');">
+                        <input type="hidden" name="nome" value="{{titulo.split('/')[-1]}}">
+                        <button type="submit" class="btn btn-danger" id="excluir">Excluir</button>
+                    </form>
+                </div>
+                    <div class="teste2 w-100 d-flex justify-content-center">
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                        {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{category}}" id="alert2">{{ message }}</div>
+                        {% endfor %}
+                        {% endif %}
+                        {% endwith %}
+                    </div>
+            </div>
+</div>
+
+<script>
+    let conteudoInicial = document.getElementById('editor').innerHTML;
+
+    document.getElementById('editor').addEventListener('input', function () {
+        var currentContent = document.getElementById('editor').innerHTML;
+
+        if (currentContent !== conteudoInicial) {
+            window.onbeforeunload = function (event) {
+                return "Are you sure you want to leave? Your changes may not be saved.";
+            }
+        }
+    });
+
+    function removeUnloadEvent() {
+        window.onbeforeunload = null;
+    }
+
+    document.getElementById('voltar').addEventListener('click', removeUnloadEvent);
+    document.getElementById('salvar').addEventListener('click', removeUnloadEvent);
+    document.getElementById('salvar-sair').addEventListener('click', removeUnloadEvent);
+    document.getElementById('excluir').addEventListener('click', removeUnloadEvent);
+</script>
+
+<script>
+    // Add this script to your page
+    history.pushState(null, null, document.URL);
+    window.addEventListener('popstate', function () {
+        history.pushState(null, null, document.URL);
+        // Redirect to the index page
+        window.location.href = '{{url_for("index")}}';
+    });
+</script>
+
+{% endblock %}

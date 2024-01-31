@@ -1,0 +1,134 @@
+* {
+    font-size: 14px;
+}
+
+.label {
+    font-weight: 600;
+}
+
+.ctn-index {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+
+}
+
+.card {
+    box-shadow: 3px 4px 2px 2px rgba(0, 0, 0, 0.553);
+    text-align: center;
+    padding: 15px;
+    height: 155px;
+    width: 300px;
+    transition: height 1.2s, width 1.2s;
+}
+
+:hover.card {
+    height: 264px;
+    width: 510px;
+    box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.253);
+}
+
+.card-conteudo,
+#conteudo {
+    /* white-space: nowrap; */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-conteudo p {
+    margin: 0 !important;
+}
+
+.novo-bloco {
+    display: flex;
+    justify-content: end;
+    padding: 0 10px;
+    margin-top: 60px;
+    gap: 20px;
+}
+
+.novo {
+    height: 42px;
+    width: 42px;
+    border-radius: 50%;
+    color: white;
+    background-color: #38c138fc;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.novo p {
+    font-size: 30px;
+    margin: 0 0 2px;
+}
+
+.renomear {
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+}
+
+:hover.novo {
+    background-color: #4cd04c;
+}
+
+body {
+    background-image: url(../img/lapis-transparente.png);
+    background-repeat: no-repeat;
+    background-position-y: 60px;
+    background-position-x: center;
+    /* height: 100vh; */
+}
+
+@media screen and (min-width: 1281px) {
+    body {
+        background-size: 700px;
+    }
+
+    .card {
+        box-shadow: 3px 4px 2px 2px rgba(0, 0, 0, 0.553);
+        text-align: center;
+        padding: 15px;
+        height: 155px;
+        width: 300px;
+        transition: height 1.2s, width 1.2s;
+    }
+
+    :hover.card {
+        height: 290px;
+        width: 340px;
+        box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.253);
+    }
+}
+
+@media screen and (max-width: 1152px) {
+    body {
+        background-size: 630px;
+    }
+
+    .card:hover {
+        height: 300px;
+        width: 400px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    body {
+        background-size: 530px;
+    }
+    
+    .card {
+        width: 280px;
+    }
+
+    .card:hover {
+        height: 260px;
+        width: 300px;
+    }
+}
